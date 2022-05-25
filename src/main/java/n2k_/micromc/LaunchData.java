@@ -1,4 +1,4 @@
-package n2k_.testlauncher;
+package n2k_.micromc;
 public class LaunchData {
     final String[] LIBRARIES_LIST;
     final String MC_DIR;
