@@ -65,12 +65,12 @@ public class Main {
                 "/libraries/com/mojang/text2speech/1.11.3/text2speech-1.11.3.jar",
                 "/libraries/ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar",
                 "/libraries/ca/weblite/java-objc-bridge/1.0.0/java-objc-bridge-1.0.0.jar",
-                "/versions/" + GAME_VERSION + "/" + GAME_VERSION + ".jar"
+                "/versions/"+GAME_VERSION+"/"+GAME_VERSION+".jar"
         };
         String JVM_ARGS = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
         LaunchData DATA = new LaunchData(LIBRARIES_LIST, "/home/ner/Minecraft", "/assets", "1.17", GAME_VERSION, "/versions/1.17/natives/");
         Launcher LAUNCHER = new Launcher("java", "n2k_", "-Xmx2G", JVM_ARGS, 800, 640, DATA);
         LAUNCHER.launch();
-        System.out.println("Minecraft 1.17 started");
+        System.out.println("Minecraft 1.17 closed");
     }
 }

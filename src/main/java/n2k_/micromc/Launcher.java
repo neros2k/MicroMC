@@ -1,5 +1,6 @@
 package n2k_.micromc;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 public class Launcher {
@@ -19,7 +20,7 @@ public class Launcher {
         this.HEIGHT = HEIGHT;
         this.DATA = DATA;
     }
-    void launch() throws IOException, InterruptedException {
+    String getCommand() {
         StringBuilder LIBRARIES_LIST_BUILDER = new StringBuilder();
         StringBuilder COMMAND_BUILDER = new StringBuilder();
         AtomicInteger I = new AtomicInteger(1);
@@ -29,12 +30,32 @@ public class Launcher {
             I.getAndIncrement();
         });
         String[] COMMANDS = new String[]{
-                JAVA_PATH, JVM_RAM, JVM_ARGS, "-Djava.library.path="+DATA.NATIVES_DIR, "-cp", LIBRARIES_LIST_BUILDER.toString(), "net.minecraft.client.main.Main",
-                "--username", PLAYER_NAME, "--version", DATA.GAME_VERSION, "--accessToken 0", "--userProperties {}", "--gameDir", DATA.MC_DIR, "--assetsDir", DATA.ASSETS_DIR,
-                "--assetIndex", DATA.ASSETS_INDEX, "--width"+WIDTH, "--height"+HEIGHT
+                JAVA_PATH, JVM_RAM, JVM_ARGS, "-Djava.library.path="+DATA.NATIVES_DIR, "-cp",
+                LIBRARIES_LIST_BUILDER.toString(), "net.minecraft.client.main.Main", "--username", PLAYER_NAME,
+                "--version", DATA.GAME_VERSION, "--accessToken 0", "--userProperties {}",
+                "--gameDir", DATA.MC_DIR, "--assetsDir", DATA.ASSETS_DIR, "--assetIndex", DATA.ASSETS_INDEX,
+                "--width"+WIDTH, "--height"+HEIGHT
         };
         Arrays.stream(COMMANDS).toList().forEach(CMD -> COMMAND_BUILDER.append(CMD).append(" "));
-        Process PROCESS = Runtime.getRuntime().exec(COMMAND_BUILDER.toString());
+        return COMMAND_BUILDER.toString();
+    }
+    Process startProcess(String COMMAND) throws IOException, InterruptedException {
+        Process PROCESS = Runtime.getRuntime().exec(COMMAND);
         PROCESS.waitFor();
+        return PROCESS;
+    }
+    void startLog(Process PROCESS) throws IOException {
+        InputStream INPUT_STREAM = PROCESS.getInputStream();
+        InputStream ERROR_STREAM = PROCESS.getErrorStream();
+        byte[] INPUT_ARRAY = new byte[INPUT_STREAM.available()];
+        INPUT_STREAM.read(INPUT_ARRAY, 0, INPUT_ARRAY.length);
+        System.out.println(new String(INPUT_ARRAY));
+        byte[] OUTPUR_ARRAY = new byte[ERROR_STREAM.available()];
+        ERROR_STREAM.read(OUTPUR_ARRAY, 0, OUTPUR_ARRAY.length);
+        System.out.println(new String(OUTPUR_ARRAY));
+    }
+    void launch() throws IOException, InterruptedException {
+        Process PROCESS = this.startProcess(this.getCommand());
+        this.startLog(PROCESS);
     }
 }
